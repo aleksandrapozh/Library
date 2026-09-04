@@ -1,6 +1,6 @@
 const myLibrary = [];
 
-function Book(title, author, pages){
+function Book(title, author, pages, read = false) { 
     if(!new.target){
         throw Error ("You must use the 'new' operator to call the constructor")
     }
@@ -8,15 +8,20 @@ function Book(title, author, pages){
     this.title = title;
     this.author = author;
     this.pages = pages;
+    this.read = read; 
 
     this.info = function(){
-        return `${this.title} by ${this.author}, ${this.pages} pages, not read yet`
+        return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read ? 'read' : 'not read yet'}`
     }
-
 }
 
-function addBookToLibrary(title, author, pages){
-    const newBook = new Book(title, author, pages);
+Book.prototype.toggleReadStatus = function() {
+    this.read = !this.read; 
+    return this.read;
+};
+
+function addBookToLibrary(title, author, pages, read = false){
+    const newBook = new Book(title, author, pages, read);
     myLibrary.push(newBook);
     return newBook;
 }
@@ -55,12 +60,16 @@ function displayBooks(){
         tr.dataset.id = book.id;
         tr.style.border = '1px solid black';
 
+        const statusText = book.read ? 'Read' : 'Not Read';
+        const statusColor = book.read ? 'green' : 'red';
+
         tr.innerHTML = `
             <td style = 'padding: 10px; text-align: center'>${book.title}</td>
             <td style = 'padding: 10px; text-align: center'>${book.author}</td>
             <td style = 'padding: 10px; text-align: center'>${book.pages}</td>
-
-            <td style="padding: 10px; text-align: center">
+            <td style = "padding: 10px; text-align: center; color: ${statusColor}; font-weight: bold;">${statusText}</td>
+            <td style = "padding: 10px; text-align: center">
+                <button onclick="toggleRead('${book.id}')">Toggle Read</button>
                 <button onclick="removeBook('${book.id}')">Remove</button>
             </td>
         `
@@ -77,6 +86,15 @@ function removeBook(bookId) {
     const bookIndex = myLibrary.findIndex(book => book.id === bookId);
     if (bookIndex !== -1) {
         myLibrary.splice(bookIndex, 1);
+        displayBooks();
+    }
+}
+
+function toggleRead(bookId) {
+    const book = myLibrary.find(book => book.id === bookId);
+    
+    if (book) {
+        book.toggleReadStatus();
         displayBooks();
     }
 }
@@ -102,8 +120,9 @@ bookForm.addEventListener('submit', (event) => {
     const title = document.getElementById('title').value;
     const author = document.getElementById('author').value;
     const pages = parseInt(document.getElementById('pages').value);
+    const read = document.getElementById('read').checked;
     
-    addBookToLibrary(title, author, pages);
+    addBookToLibrary(title, author, pages, read);
     
     displayBooks();
     
