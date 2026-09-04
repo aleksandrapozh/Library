@@ -59,6 +59,10 @@ function displayBooks(){
             <td style = 'padding: 10px; text-align: center'>${book.title}</td>
             <td style = 'padding: 10px; text-align: center'>${book.author}</td>
             <td style = 'padding: 10px; text-align: center'>${book.pages}</td>
+
+            <td style="padding: 10px; text-align: center">
+                <button onclick="removeBook('${book.id}')">Remove</button>
+            </td>
         `
         tbody.appendChild(tr);
     });
@@ -67,8 +71,15 @@ function displayBooks(){
 
     container.appendChild(table);
 }
-
 displayBooks()
+
+function removeBook(bookId) {
+    const bookIndex = myLibrary.findIndex(book => book.id === bookId);
+    if (bookIndex !== -1) {
+        myLibrary.splice(bookIndex, 1);
+        displayBooks();
+    }
+}
 
 const newBookBtn = document.getElementById('new-book-btn');
 const dialog = document.getElementById('book-dialog');
