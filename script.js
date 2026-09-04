@@ -56,9 +56,9 @@ function displayBooks(){
         tr.style.border = '1px solid black';
 
         tr.innerHTML = `
-            <td style = ' text-align: center'>${book.title}</td>
-            <td style = ' text-align: center'>${book.author}</td>
-            <td style = ' text-align: center'>${book.pages}</td>
+            <td style = 'padding: 10px; text-align: center'>${book.title}</td>
+            <td style = 'padding: 10px; text-align: center'>${book.author}</td>
+            <td style = 'padding: 10px; text-align: center'>${book.pages}</td>
         `
         tbody.appendChild(tr);
     });
@@ -69,3 +69,34 @@ function displayBooks(){
 }
 
 displayBooks()
+
+const newBookBtn = document.getElementById('new-book-btn');
+const dialog = document.getElementById('book-dialog');
+const bookForm = document.getElementById('book-form');
+const cancelBtn = document.getElementById('cancel-btn');
+
+
+newBookBtn.addEventListener('click', () => {
+    dialog.showModal(); 
+    bookForm.reset(); 
+});
+
+cancelBtn.addEventListener('click', () => {
+    dialog.close();
+});
+
+bookForm.addEventListener('submit', (event) => {
+    event.preventDefault(); 
+    
+    const title = document.getElementById('title').value;
+    const author = document.getElementById('author').value;
+    const pages = parseInt(document.getElementById('pages').value);
+    
+    addBookToLibrary(title, author, pages);
+    
+    displayBooks();
+    
+    dialog.close();
+    
+    bookForm.reset();
+});
